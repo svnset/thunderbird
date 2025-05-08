@@ -12,6 +12,36 @@ import * as uuid from "https://deno.land/std@0.207.0/uuid/mod.ts";
 // DO NOT CHANGE
 const NAMESPACE_URL = "6da2d448-69ec-48e0-aabf-3c6379788110";
 
+type ThemeObject = {
+  manifest_version: number;
+  name: string;
+  version: string;
+  applications: {
+    gecko: {
+      id: string;
+      strict_min_version: string;
+    };
+  };
+  description: string;
+  icons: Record<string, string>;
+  theme_experiment: {
+    stylesheet: string;
+    colors: Record<string, string>;
+  };
+  theme: {
+    colors: Record<string, string>;
+    properties: {
+      color_scheme: string;
+    };
+  };
+  dark_theme: {
+    colors: Record<string, string>;
+    properties: {
+      color_scheme: string;
+    };
+  };
+};
+
 const accents = [
   "rosewater",
   "flamingo",
@@ -34,7 +64,7 @@ async function makeThemeObject(
   accent: AccentName,
   flavor: CatppuccinFlavor,
   autoTheme: boolean,
-) {
+): Promise<ThemeObject> {
   const darkColors = getColors(accent, flavor);
   let lightColors = getColors(accent, flavor);
   let colorScheme = "dark";
@@ -114,7 +144,7 @@ async function makeThemeObject(
 function getColors(
   accent: AccentName,
   flavor: CatppuccinFlavor,
-) {
+): Record<string, string> {
   return {
     frame: flavor.colors.base.hex,
     button_background_active: flavor.colors[accent].hex,
@@ -190,7 +220,7 @@ async function generateVariants(
 
 async function writeTheme(
   fileName: string,
-  theme: unknown,
+  theme: ThemeObject,
   path: string,
 ) {
   const json = JSON.stringify(theme, undefined, 2);
