@@ -31,7 +31,7 @@ const accents = [
 ] as const;
 
 async function makeThemeObject(
-  name: string,
+  identifier: string,
   accent: AccentName,
   palette: CatppuccinFlavor,
   autoTheme: boolean,
@@ -52,7 +52,7 @@ async function makeThemeObject(
     colorScheme = "auto";
   }
 
-  const themeName = `catppuccin-${name}-${accent}`;
+  const themeName = `catppuccin-${identifier}-${accent}`;
   const encodedName = new TextEncoder().encode(themeName);
   return {
     manifest_version: 2,
@@ -64,7 +64,7 @@ async function makeThemeObject(
         strict_min_version: "60.0",
       },
     },
-    description: `Soothing pastel theme for Thunderbird - ${titleCase(name)} ${
+    description: `Soothing pastel theme for Thunderbird - ${titleCase(palette.name)} ${
       titleCase(accent)
     }`,
     icons: {
@@ -178,15 +178,15 @@ async function getColors(
 }
 
 async function generateVariants(
-  name: string,
+  identifier: string,
   flavor: CatppuccinFlavor,
 ) {
   for (const accent of accents) {
-    const theme = await makeThemeObject(name, accent, flavor, false);
-    const autoTheme = await makeThemeObject(name, accent, flavor, true);
-    const fileName = `${name}-${accent}.xpi`;
-    writeTheme(fileName, theme, `./themes/default/${name}`);
-    writeTheme(fileName, autoTheme, `./themes/auto/${name}`);
+    const theme = await makeThemeObject(identifier, accent, flavor, false);
+    const autoTheme = await makeThemeObject(identifier, accent, flavor, true);
+    const fileName = `${identifier}-${accent}.xpi`;
+    writeTheme(fileName, theme, `./themes/default/${identifier}`);
+    writeTheme(fileName, autoTheme, `./themes/auto/${identifier}`);
   }
 }
 
@@ -216,7 +216,7 @@ async function writeTheme(
 
 const start = performance.now();
 await Promise.all(
-  flavorEntries.map(([name, flavor]) => generateVariants(name, flavor)),
+  flavorEntries.map(([identifier, flavor]) => generateVariants(identifier, flavor)),
 );
 
 console.log("Built in", performance.now() - start, "ms");
