@@ -212,7 +212,7 @@ async function writeTheme(
 
 const start = performance.now();
 await Promise.all(
-  flavorEntries.flatMap(([identifier, flavor]) =>
+  flavorEntries.map(([identifier, flavor]) =>
     generateVariants(identifier, flavor)
   ),
 );
