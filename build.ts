@@ -5,7 +5,6 @@ import {
   flavorEntries,
   flavors,
 } from "jsr:@catppuccin/palette@1.7.1";
-import { titleCase } from "https://deno.land/x/case@2.2.0/mod.ts";
 import { JSZip } from "https://deno.land/x/jszip@0.11.0/mod.ts";
 import * as uuid from "https://deno.land/std@0.207.0/uuid/mod.ts";
 
@@ -45,9 +44,6 @@ async function makeThemeObject(
   }
 
   if (autoTheme) {
-    if (flavor.name == flavors.latte.name) {
-      return null;
-    }
     lightColors = getColors(accent, flavors.latte);
     colorScheme = "auto";
   }
@@ -64,8 +60,8 @@ async function makeThemeObject(
         strict_min_version: "60.0",
       },
     },
-    description: `Soothing pastel theme for Thunderbird - ${titleCase(flavor.name)} ${
-      titleCase(accent)
+    description: `Soothing pastel theme for Thunderbird - ${flavor.name} ${
+      flavor.colors[accent].name
     }`,
     icons: {
       "16": "images/icon16.png",
@@ -182,11 +178,13 @@ async function generateVariants(
   flavor: CatppuccinFlavor,
 ) {
   for (const accent of accents) {
-    const theme = await makeThemeObject(identifier, accent, flavor, false);
-    const autoTheme = await makeThemeObject(identifier, accent, flavor, true);
     const fileName = `${identifier}-${accent}.xpi`;
+    const theme = await makeThemeObject(identifier, accent, flavor, false);
     writeTheme(fileName, theme, `./themes/default/${identifier}`);
-    writeTheme(fileName, autoTheme, `./themes/auto/${identifier}`);
+    if (flavor != flavors.latte) {
+      const autoTheme = await makeThemeObject(identifier, accent, flavor, true);
+      writeTheme(fileName, autoTheme, `./themes/auto/${identifier}`);
+    }
   }
 }
 
@@ -195,28 +193,28 @@ async function writeTheme(
   theme: unknown,
   path: string,
 ) {
-  if (theme) {
-    const json = JSON.stringify(theme, undefined, 2);
+  const json = JSON.stringify(theme, undefined, 2);
 
-    Deno.mkdirSync(`${path}`, {
-      recursive: true,
-    });
+  Deno.mkdirSync(`${path}`, {
+    recursive: true,
+  });
 
-    const zip = new JSZip();
-    zip.addFile("manifest.json", json);
+  const zip = new JSZip();
+  zip.addFile("manifest.json", json);
 
-    const images = zip.folder("images");
-    images.addFile("icon16.png", "./assets/icon16.png");
-    images.addFile("icon48.png", "./assets/icon48.png");
-    images.addFile("icon128.png", "./assets/icon128.png");
+  const images = zip.folder("images");
+  images.addFile("icon16.png", "./assets/icon16.png");
+  images.addFile("icon48.png", "./assets/icon48.png");
+  images.addFile("icon128.png", "./assets/icon128.png");
 
-    await zip.writeZip(`${path}/${fileName}`);
-  }
+  await zip.writeZip(`${path}/${fileName}`);
 }
 
 const start = performance.now();
 await Promise.all(
-  flavorEntries.map(([identifier, flavor]) => generateVariants(identifier, flavor)),
+  flavorEntries.flatMap(([identifier, flavor]) =>
+    generateVariants(identifier, flavor)
+  ),
 );
 
 console.log("Built in", performance.now() - start, "ms");
