@@ -33,22 +33,22 @@ const accents = [
 async function makeThemeObject(
   identifier: string,
   accent: AccentName,
-  palette: CatppuccinFlavor,
+  flavor: CatppuccinFlavor,
   autoTheme: boolean,
 ) {
-  const darkColors = await getColors(accent, palette);
-  let lightColors = await getColors(accent, palette);
+  const darkColors = getColors(accent, flavor);
+  let lightColors = getColors(accent, flavor);
   let colorScheme = "dark";
 
-  if (!palette.dark) {
+  if (!flavor.dark) {
     colorScheme = "light";
   }
 
   if (autoTheme) {
-    if (palette.name == flavors.latte.name) {
+    if (flavor.name == flavors.latte.name) {
       return null;
     }
-    lightColors = await getColors(accent, flavors.latte);
+    lightColors = getColors(accent, flavors.latte);
     colorScheme = "auto";
   }
 
@@ -64,7 +64,7 @@ async function makeThemeObject(
         strict_min_version: "60.0",
       },
     },
-    description: `Soothing pastel theme for Thunderbird - ${titleCase(palette.name)} ${
+    description: `Soothing pastel theme for Thunderbird - ${titleCase(flavor.name)} ${
       titleCase(accent)
     }`,
     icons: {
@@ -115,65 +115,65 @@ async function makeThemeObject(
   };
 }
 
-async function getColors(
+function getColors(
   accent: AccentName,
-  palette: CatppuccinFlavor,
+  flavor: CatppuccinFlavor,
 ) {
   return {
-    frame: palette.colors.base.hex,
-    button_background_active: palette.colors[accent].hex,
-    button_background_hover: palette.colors.surface0.hex,
-    icons: palette.colors.text.hex,
-    tab_text: palette.colors.text.hex,
-    tab_line: palette.colors[accent].hex,
-    tab_loading: palette.colors[accent].hex,
-    tab_selected: palette.colors.base.hex,
-    tab_background_text: palette.colors.overlay1.hex,
-    tab_background_separator: palette.colors.surface0.hex,
-    bookmark_text: palette.colors.text.hex,
-    toolbar: palette.colors.base.hex,
-    toolbar_field: palette.colors.surface0.hex,
-    toolbar_field_text: palette.colors.text.hex,
-    toolbar_field_highlight: palette.colors[accent].hex,
-    toolbar_field_highlight_text: palette.colors.mantle.hex,
-    toolbar_field_border: palette.colors.mantle.hex,
-    toolbar_field_focus: palette.colors.surface0.hex,
-    toolbar_field_text_focus: palette.colors.text.hex,
-    toolbar_field_border_focus: palette.colors[accent].hex,
-    toolbar_top_separator: palette.colors.surface0.hex,
-    toolbar_bottom_separator: palette.colors.surface0.hex,
-    toolbar_vertical_separator: palette.colors.surface0.hex,
-    sidebar: palette.colors.base.hex,
-    sidebar_text: palette.colors.text.hex,
-    sidebar_highlight: palette.colors[accent].hex,
-    sidebar_highlight_text: palette.colors.mantle.hex,
-    sidebar_border: palette.colors.surface0.hex,
-    popup: palette.colors.surface0.hex,
-    popup_text: palette.colors.text.hex,
-    popup_border: palette.colors.base.hex,
-    popup_highlight: palette.colors[accent].hex,
-    popup_highlight_text: palette.colors.mantle.hex,
-    spaces_bg: palette.colors.mantle.hex,
-    tree_view_bg: palette.colors.crust.hex,
-    bg_color: palette.colors.base.hex,
-    spaces_bg_active: palette.colors[accent].hex,
-    button_primary_bg: palette.colors[accent].hex,
-    button_text: palette.colors.crust.hex,
-    spaces_button: palette.colors.crust.hex,
-    tree_pane_bg: palette.colors.crust.hex,
-    tree_card_bg: palette.colors.mantle.hex,
-    layout_bg_0: palette.colors.base.hex,
-    layout_bg_1: palette.colors.base.hex,
-    button_bg: palette.colors.mantle.hex,
-    lwt_accent_color: palette.colors.mantle.hex,
-    list_container_background_selected_current: palette.colors.mantle.hex,
-    ab_cards_list_bg: palette.colors.mantle.hex,
-    in_content_box_info_background: palette.colors.mantle.hex,
-    calendar_view_toggle_bg: palette.colors.mantle.hex,
-    calendar_view_toggle_hover_bg: palette.colors.surface0.hex,
-    tabs_toolbar_bg: palette.colors.mantle.hex,
-    color_gray_70: palette.colors.mantle.hex,
-    color_gray_50: palette.colors.surface1.hex,
+    frame: flavor.colors.base.hex,
+    button_background_active: flavor.colors[accent].hex,
+    button_background_hover: flavor.colors.surface0.hex,
+    icons: flavor.colors.text.hex,
+    tab_text: flavor.colors.text.hex,
+    tab_line: flavor.colors[accent].hex,
+    tab_loading: flavor.colors[accent].hex,
+    tab_selected: flavor.colors.base.hex,
+    tab_background_text: flavor.colors.overlay1.hex,
+    tab_background_separator: flavor.colors.surface0.hex,
+    bookmark_text: flavor.colors.text.hex,
+    toolbar: flavor.colors.base.hex,
+    toolbar_field: flavor.colors.surface0.hex,
+    toolbar_field_text: flavor.colors.text.hex,
+    toolbar_field_highlight: flavor.colors[accent].hex,
+    toolbar_field_highlight_text: flavor.colors.mantle.hex,
+    toolbar_field_border: flavor.colors.mantle.hex,
+    toolbar_field_focus: flavor.colors.surface0.hex,
+    toolbar_field_text_focus: flavor.colors.text.hex,
+    toolbar_field_border_focus: flavor.colors[accent].hex,
+    toolbar_top_separator: flavor.colors.surface0.hex,
+    toolbar_bottom_separator: flavor.colors.surface0.hex,
+    toolbar_vertical_separator: flavor.colors.surface0.hex,
+    sidebar: flavor.colors.base.hex,
+    sidebar_text: flavor.colors.text.hex,
+    sidebar_highlight: flavor.colors[accent].hex,
+    sidebar_highlight_text: flavor.colors.mantle.hex,
+    sidebar_border: flavor.colors.surface0.hex,
+    popup: flavor.colors.surface0.hex,
+    popup_text: flavor.colors.text.hex,
+    popup_border: flavor.colors.base.hex,
+    popup_highlight: flavor.colors[accent].hex,
+    popup_highlight_text: flavor.colors.mantle.hex,
+    spaces_bg: flavor.colors.mantle.hex,
+    tree_view_bg: flavor.colors.crust.hex,
+    bg_color: flavor.colors.base.hex,
+    spaces_bg_active: flavor.colors[accent].hex,
+    button_primary_bg: flavor.colors[accent].hex,
+    button_text: flavor.colors.crust.hex,
+    spaces_button: flavor.colors.crust.hex,
+    tree_pane_bg: flavor.colors.crust.hex,
+    tree_card_bg: flavor.colors.mantle.hex,
+    layout_bg_0: flavor.colors.base.hex,
+    layout_bg_1: flavor.colors.base.hex,
+    button_bg: flavor.colors.mantle.hex,
+    lwt_accent_color: flavor.colors.mantle.hex,
+    list_container_background_selected_current: flavor.colors.mantle.hex,
+    ab_cards_list_bg: flavor.colors.mantle.hex,
+    in_content_box_info_background: flavor.colors.mantle.hex,
+    calendar_view_toggle_bg: flavor.colors.mantle.hex,
+    calendar_view_toggle_hover_bg: flavor.colors.surface0.hex,
+    tabs_toolbar_bg: flavor.colors.mantle.hex,
+    color_gray_70: flavor.colors.mantle.hex,
+    color_gray_50: flavor.colors.surface1.hex,
   };
 }
 
