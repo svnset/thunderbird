@@ -6,7 +6,7 @@ import {
   flavors,
 } from "jsr:@catppuccin/palette@1.7.1";
 import { JSZip } from "https://deno.land/x/jszip@0.11.0/mod.ts";
-import * as uuid from "https://deno.land/std@0.207.0/uuid/mod.ts";
+import * as uuid from "jsr:@std/uuid@1.0.7";
 
 // Allows for the UUIDs to be "seeded" and therefore reproducible
 // DO NOT CHANGE
